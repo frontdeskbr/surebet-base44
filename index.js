@@ -45,43 +45,26 @@ const fetch = require('node-fetch');
         linkcasa2: odds[1]?.href || ''
       };
 
+      // Gerar ID único
       item.id = `${item.evento1}-${item.casa1}-${item.casa2}-${item.mercado1}-${item.odd1}`
         .replace(/\s+/g, '-')
+        .replace(/[^\w\-]/g, '')
         .toLowerCase();
 
       return item;
     });
   });
 
-  console.log(`📤 Enviando ${oportunidades.length} oportunidades para Base44...`);
+  console.log(`📤 Enviando ${oportunidades.length} para Base44 (Arbs)...`);
 
   for (const item of oportunidades) {
-    const payload = {
-      match_title: `${item.evento1} vs ${item.evento2}`,
-      sport: item.esporte1 || item.esporte2,
-      match_date: `${item.data} ${item.hora}`,
-      bookmaker_1: item.casa1,
-      odds_1: parseFloat(item.odd1.replace(',', '.')) || null,
-      bookmaker_2: item.casa2,
-      odds_2: parseFloat(item.odd2.replace(',', '.')) || null,
-      profit_margin: parseFloat(item.lucro.replace('%', '').replace(',', '.')) || null,
-      status: 'active',
-      confidence_score: 100,
-      expected_profit: null,
-      stake_1: null,
-      stake_2: null,
-      total_stake: null,
-      odds_draw: null,
-      bookmaker_draw: null
-    };
-
-    await fetch(`https://app.base44.com/api/apps/687feeeed73fb1898811e236/entities/SurebetOpportunity`, {
-      method: 'POST',
+    await fetch(`https://app.base44.com/api/apps/687feeeed73fb1898811e236/entities/Arbs/${item.id}`, {
+      method: 'PUT',
       headers: {
         'api_key': 'aa8af3e07c394be49e3bc8acad14b939',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(item)
     });
   }
 
