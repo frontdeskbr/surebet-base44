@@ -45,7 +45,6 @@ const fetch = require('node-fetch');
         linkcasa2: odds[1]?.href || ''
       };
 
-      // Gerar ID único
       item.id = `${item.evento1}-${item.casa1}-${item.casa2}-${item.mercado1}-${item.odd1}`
         .replace(/\s+/g, '-')
         .replace(/[^\w\-]/g, '')
@@ -58,14 +57,21 @@ const fetch = require('node-fetch');
   console.log(`📤 Enviando ${oportunidades.length} para Base44 (Arbs)...`);
 
   for (const item of oportunidades) {
-    await fetch(`https://app.base44.com/api/apps/687feeeed73fb1898811e236/entities/Arbs/${item.id}`, {
-      method: 'PUT',
-      headers: {
-        'api_key': 'aa8af3e07c394be49e3bc8acad14b939',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(item)
-    });
+    try {
+      const res = await fetch(`https://app.base44.com/api/apps/687feeeed73fb1898811e236/entities/Arbs/${item.id}`, {
+        method: 'PUT',
+        headers: {
+          'api_key': 'aa8af3e07c394be49e3bc8acad14b939',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(item)
+      });
+
+      const result = await res.json();
+      console.log(`✅ ${item.id}`, result);
+    } catch (err) {
+      console.error(`❌ Falha em ${item.id}`, err.message);
+    }
   }
 
   console.log("✅ Finalizado.");
