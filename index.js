@@ -38,7 +38,7 @@ const fetch = require('node-fetch');
         evento2: eventos[1]?.innerText.trim() || '',
         descev2: descricoes[1]?.innerText.trim() || '',
         mercado1: mercados[0]?.innerText.trim() || '',
-        odd1: odds[0]?.innerText.trim() || '',
+        odd1: String(odds[0]?.innerText.trim() || ''),
         mercado2: mercados[1]?.innerText.trim() || '',
         odd2: odds[1]?.innerText.trim() || '',
         linkcasa1: odds[0]?.href || '',
